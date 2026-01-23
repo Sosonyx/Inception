@@ -1,0 +1,59 @@
+# DOCKER IMAGES:
+docker images (affichage des images)
+
+docker build -t nginx:inception .    (a faire dans le dossier du Dockerfile) (-t pour le TAG)
+docker image rm <IMAGE ID>
+
+# DOCKER CONTAINER:
+docker rm -f <container name>
+
+# RUN:
+docker run -d --name wordpress_container \
+  -p 9000:9000 \
+  -v wordpress_files:/var/www/html \
+  wp:inception
+
+docker exec -it <container name> bash
+
+docker run --rm -p 9000:9000 wp:inception
+
+docker run -it wp:inception bash
+
+docker logs <container name>
+
+docker volume ls
+
+docker network ls
+
+docker ps (-a)
+
+# DOCKER COMPOSE
+
+docker compose up -d --build (-d en fond)
+
+docker compose down
+
+docker compose ps
+
+
+
+# INFOS:
+- (driver: bridge = type par défaut pour la plupart des réseaux Docker), 
+	on doit definir le reseau de communication entre les services
+
+- rm -rf /var/lib/apt/lists/* → supprime les fichiers temporaires d’APT pour réduire la taille de l’image.
+
+- WORKDIR /var/www/html
+	Définit le répertoire de travail pour toutes les commandes suivantes (COPY, RUN, etc.).
+	/var/www/html est la convention pour héberger les fichiers web.
+	(Si le dossier nexiste pas, Docker le crée.)
+
+- on map les ports d'ecoute dans le YML pas dans le DOCKERFILE
+
+- rediriger le log d’erreur PHP-FPM vers stdout/stderr du container (/proc/self/fd/2) pour que Docker puisse les afficher dans docker logs
+
+- openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout ssl/nginx.key \
+  -out ssl/nginx.crt \
+  -subj "/CN=localhost"    <---- genere les certificats autosignee

@@ -1,0 +1,58 @@
+services:
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb:inception
+    env_file:
+      - .env
+    volumes:
+    networks:
+      - inception_network
+    container_name: mariadb
+    healthcheck:
+      test: ["executable", "arg"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+    image: wordpress:inception
+    env_file:
+      - .env
+    volumes:
+      - wordpress_html:/var/www/html
+    networks:
+      - inception_network
+    depends_on:
+      - mariadb
+    container_name: wordpress
+
+  nginx:
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    image: nginx:inception
+    env_file:
+      - .env
+    ports:
+      - "8443:443"
+    volumes:
+      - wordpress_html:/var/www/html
+    networks:
+      - inception_network
+    depends_on:
+      - wordpress:
+    container_name: nginx
+
+volumes:
+  wordpress_data:
+  wordpress_html:
+
+networks:
+  inception_network:
+    driver: bridge
