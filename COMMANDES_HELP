@@ -15,17 +15,21 @@ docker run -d --name wordpress_container \
 
 docker exec -it <container name> bash
 
+docker run --rm -it nginx /bin/bash
 docker run --rm -p 9000:9000 wp:inception
 
 docker run -it wp:inception bash
 
+docker ps
+
+docker ps -a (si le run a echouee)
 docker logs <container name>
+(-> docker rm <container name>)
 
 docker volume ls
 
 docker network ls
 
-docker ps (-a)
 
 # DOCKER COMPOSE
 

@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
     mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
-COPY conf/mariadb.conf /etc/mysql/mariadb.conf.d/mariadb.conf
+COPY conf/mariadb.cnf /etc/mysql/mariadb.cnf.d/mariadb.cnf
 COPY tools/init-db.sh /usr/local/bin/init-db.sh
 
 RUN chmod +x /usr/local/bin/init-db.sh && \
