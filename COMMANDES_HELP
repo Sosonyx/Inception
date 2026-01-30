@@ -61,3 +61,12 @@ docker compose ps
   -keyout ssl/nginx.key \
   -out ssl/nginx.crt \
   -subj "/CN=localhost"    <---- genere les certificats autosignee
+
+
+
+
+SQL : 
+
+SHOW DATABASES;
+
+SELECT User, Host FROM mysql.user;

@@ -12,7 +12,7 @@ services:
       - inception_network
     container_name: mariadb
     # healthcheck:
-    #   test: ["executable", "arg"]
+    #   test: ["executable", "arg"] ping et check show database
     #   interval: 1m30s
     #   timeout: 30s
     #   retries: 5
@@ -52,7 +52,6 @@ services:
 
 volumes:
   mariadb_data:
-  wordpress_data:
   wordpress_html:
 
 networks:

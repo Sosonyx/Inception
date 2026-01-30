@@ -8,16 +8,28 @@ if [ -f "$WP_DIR/wp-config.php" ]; then
     exec /usr/sbin/php-fpm8.2 -F
 fi
 
+# DL
 echo -e "\e[36mDownloading WordPress...\e[0m"
 curl -o /tmp/wordpress.tar.gz https://wordpress.org/latest.tar.gz
 
+# Extract
 echo -e "\e[36mExtracting WordPress...\e[0m"
 tar -xzf /tmp/wordpress.tar.gz -C /tmp
 rm -rf $WP_DIR/wp-admin $WP_DIR/wp-content $WP_DIR/wp-includes
 mv /tmp/wordpress/* $WP_DIR
 rm -rf /tmp/wordpress /tmp/wordpress.tar.gz
 
-chown -R www-data:www-data $WP_DIR
+echo -e "\e[36mCreating wp-config.php...\e[0m"
+
+# Set le wp-config.php
+cp $WP_DIR/wp-config-sample.php $WP_DIR/wp-config.php
+
+sed -i "s/database_name_here/${MYSQL_DATABASE}/" $WP_DIR/wp-config.php
+sed -i "s/username_here/${MYSQL_USER}/" $WP_DIR/wp-config.php
+sed -i "s/password_here/${MYSQL_PASSWORD}/" $WP_DIR/wp-config.php
+sed -i "s/localhost/${MYSQL_HOST}/" $WP_DIR/wp-config.php
+
+chown www-data:www-data $WP_DIR/wp-config.php
 
 echo -e "\e[32mSuccess! WordPress correctement installé. :)\e[0m"
 exec /usr/sbin/php-fpm8.2 -F
