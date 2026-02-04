@@ -32,6 +32,11 @@ sed -i "s/localhost/${MYSQL_HOST}/" $WP_DIR/wp-config.php
 chown www-data:www-data $WP_DIR/wp-config.php
 
 echo -e "\e[32mSuccess! WordPress correctement installé. :)\e[0m"
+
 exec /usr/sbin/php-fpm8.2 -F
+
+# exec php pour remplacer le pid1 qui est le shell (pour lancer le script), par le service (php fpm ici)
+# -F pour forcer le foreground (et ne pas avoir mon container qui s'arrete car il n'a plus rien a surveiller)
+
 
 # l'output sort dans le stdout du container, a visualiser avec 'docker logs -f <container>'

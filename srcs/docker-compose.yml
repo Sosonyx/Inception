@@ -11,12 +11,12 @@ services:
     networks:
       - inception_network
     container_name: mariadb
-    # healthcheck:
-    #   test: ["executable", "arg"] ping et check show database
-    #   interval: 1m30s
-    #   timeout: 30s
-    #   retries: 5
-    #   start_period: 30s
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "--password=${MYSQL_PASSWORD}"]
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   wordpress:
     build:
@@ -31,7 +31,9 @@ services:
       - inception_network
     depends_on:
       - mariadb
+    #     condition: service_healthy
     container_name: wordpress
+    restart: always
 
   nginx:
     build:
@@ -48,11 +50,28 @@ services:
       - inception_network
     depends_on:
       - wordpress
+    #     condition: service_healthy
     container_name: nginx
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "https://localhost"]
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
 volumes:
   mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ihadj/data/mariadb
   wordpress_html:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ihadj/data/wordpress
 
 networks:
   inception_network:
