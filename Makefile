@@ -12,11 +12,11 @@ up:
 down:
 	@docker compose -f $(COMPOSE_FILE) down
 
-clean: down
+clean c: down
 	@docker compose -f $(COMPOSE_FILE) down -v
 	@docker system prune -af
 
-fclean: clean
+fclean fc: clean
 	@docker volume rm inception_wordpress_data 2>/dev/null || true
 	@docker volume rm inception_wordpress_html 2>/dev/null || true
 
@@ -28,4 +28,4 @@ logs:
 status:
 	@docker compose -f $(COMPOSE_FILE) ps
 
-.PHONY: all build up down clean fclean re logs status
+.PHONY: all build up down clean fclean fc re logs status
