@@ -13,7 +13,7 @@ services:
     container_name: mariadb
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--silent"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -66,6 +66,7 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://localhost"]
+      interval: 10s
       timeout: 5s
       retries: 3
       start_period: 60s

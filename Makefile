@@ -1,7 +1,10 @@
 COMPOSE_FILE = srcs/docker-compose.yml
-DATA_DIR = /home/$(USER)/data
 
-all: build up
+all: setup build up
+
+setup:
+	@mkdir -p /home/ihadj/data/mariadb
+	@mkdir -p /home/ihadj/data/wordpress
 
 build:
 	@docker compose -f $(COMPOSE_FILE) build
@@ -12,13 +15,12 @@ up:
 down:
 	@docker compose -f $(COMPOSE_FILE) down
 
-clean c: down
+clean: down
 	@docker compose -f $(COMPOSE_FILE) down -v
-	@docker system prune -af
 
-fclean fc: clean
-	@docker volume rm inception_wordpress_data 2>/dev/null || true
-	@docker volume rm inception_wordpress_html 2>/dev/null || true
+fclean: clean
+	@docker volume rm srcs_mariadb_data 2>/dev/null || true
+	@docker volume rm srcs_wordpress_html 2>/dev/null || true
 
 re: fclean all
 
@@ -28,4 +30,4 @@ logs:
 status:
 	@docker compose -f $(COMPOSE_FILE) ps
 
-.PHONY: all build up down clean fclean fc re logs status
+.PHONY: all build up down clean fclean re logs status
