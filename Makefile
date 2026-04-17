@@ -21,6 +21,7 @@ clean: down
 fclean: clean
 	@docker volume rm srcs_mariadb_data 2>/dev/null || true
 	@docker volume rm srcs_wordpress_html 2>/dev/null || true
+	@docker image prune -a -f
 
 re: fclean all
 

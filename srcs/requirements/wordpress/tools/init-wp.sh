@@ -5,7 +5,7 @@ WP_DIR="/var/www/html"
 
 # Attendre que MariaDB soit prête
 echo "Attente de MariaDB..."
-until mysqladmin ping -h "${MYSQL_HOST}" -u "${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --silent 2>/dev/null; do
+until mysqladmin --ssl=0 ping -h "${MYSQL_HOST}" -u "${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --silent 2>/dev/null; do
     sleep 2
 done
 echo "MariaDB prête."
