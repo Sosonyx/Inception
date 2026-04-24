@@ -3,19 +3,6 @@ set -e
 
 WP_DIR="/var/www/html"
 
-# Attendre que MariaDB soit prête
-echo "Attente de MariaDB..."
-until mysqladmin --ssl=0 ping -h "${MYSQL_HOST}" -u "${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --silent 2>/dev/null; do
-    sleep 2
-done
-echo "MariaDB prête."
-
-# Si WordPress est déjà installé, on lance juste php-fpm
-if [ -f "$WP_DIR/wp-config.php" ]; then
-    echo "WordPress déjà installé."
-    exec /usr/sbin/php-fpm8.2 -F
-fi
-
 # Téléchargement et extraction
 echo "Téléchargement de WordPress..."
 curl -o /tmp/wordpress.tar.gz https://wordpress.org/latest.tar.gz

@@ -3,14 +3,8 @@ FROM debian:bookworm
 RUN apt-get update && apt-get install -y \
 	php-fpm \
 	php-mysql \
-	php-gd \
-	php-xml \
-	php-mbstring \
 	php-cli \
-	iproute2 \
 	curl \
-	unzip \
-	mariadb-client \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 	&& chmod +x /usr/local/bin/wp
