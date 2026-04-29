@@ -14,6 +14,8 @@ docker run -d --name wordpress_container \
   wp:inception
 
 docker exec -it <container name> bash
+docker exec -it mariadb mysql -h localhost -u root -p // to connect with the root localhost
+
 
 docker run --rm -it nginx /bin/bash
 docker run --rm -p 9000:9000 wp:inception
@@ -67,6 +69,10 @@ docker compose ps
 
 SQL : 
 
+
 SHOW DATABASES;
 
 SELECT User, Host FROM mysql.user;
+
+USE wordpressdb;
+SHOW TABLES;
