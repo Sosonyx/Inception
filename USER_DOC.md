@@ -8,8 +8,11 @@ This stack provides the following services:
 - WordPress (PHP-FPM): application service
 - MariaDB: database service
 - Front-page (bonus): static website service routed through NGINX at `/front-page/`
+- Redis (bonus): object cache used internally by WordPress
+- Adminer (bonus): database administration UI exposed on port 8080
 
-Only NGINX is exposed to the host network.
+NGINX is the only HTTPS-facing entrypoint. Adminer is reachable on its own HTTP port
+as permitted by the bonus rules.
 
 ## Start and Stop the Project
 
@@ -48,6 +51,12 @@ Bonus static site:
 
 - `https://ihadj.42.fr/front-page/`
 
+Adminer (bonus):
+
+- `http://ihadj.42.fr:8080/`
+- Use server `mariadb`, the `MYSQL_USER` and `MYSQL_PASSWORD` from `srcs/.env`,
+  and the database `MYSQL_DATABASE`.
+
 If the domain does not resolve, add a local hosts mapping to your machine IP.
 
 ## Credentials and Configuration
@@ -59,6 +68,7 @@ Important variables include:
 - Database: `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`
 - WordPress admin/user: `WP_ADMIN_USER`, `WP_ADMIN_PASSWORD`, `WP_USER`, `WP_USER_PASSWORD`
 - Domain: `DOMAIN_NAME`
+- Redis cache: `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`
 
 A template file is available at `srcs/.env.sample`.
 
@@ -86,6 +96,24 @@ Test static bonus route:
 
 ```bash
 curl -k -I https://ihadj.42.fr/front-page/
+```
+
+Test Adminer:
+
+```bash
+curl -I http://ihadj.42.fr:8080/
+```
+
+Check the Redis cache from inside the container:
+
+```bash
+docker exec -it redis redis-cli -a "$REDIS_PASSWORD" ping
+```
+
+Check the WordPress object cache status:
+
+```bash
+docker exec -it wordpress wp redis status --path=/var/www/html --allow-root
 ```
 
 Tail logs:

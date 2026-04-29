@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
 	php-xml \
 	php-mbstring \
 	php-cli \
+	php-redis \
 	iproute2 \
 	curl \
 	unzip \

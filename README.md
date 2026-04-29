@@ -12,7 +12,10 @@ This repository contains:
 - A WordPress + PHP-FPM container
 - A MariaDB container
 - Persistent storage for both database data and WordPress files
-- A bonus static website served from a dedicated container and exposed through NGINX
+- Bonus services:
+  - A static front-page website served from a dedicated container and exposed through NGINX
+  - A Redis container used as object cache for WordPress
+  - An Adminer container exposed on port 8080 for database administration
 
 ## Instructions
 
@@ -54,6 +57,7 @@ make re        # Full rebuild cycle
 
 - Main website (WordPress): `https://ihadj.42.fr/`
 - Bonus static website (through NGINX reverse proxy): `https://ihadj.42.fr/front-page/`
+- Adminer (bonus, direct port): `http://ihadj.42.fr:8080/`
 
 ## Resources
 
@@ -64,6 +68,8 @@ make re        # Full rebuild cycle
 - NGINX docs: https://nginx.org/en/docs/
 - MariaDB docs: https://mariadb.com/kb/en/documentation/
 - WordPress docs: https://developer.wordpress.org/
+- Redis docs: https://redis.io/docs/
+- Adminer docs: https://www.adminer.org/
 
 ### AI usage
 
@@ -72,13 +78,15 @@ AI assistance was used for:
 - Reviewing container healthcheck behavior and startup flow
 - Drafting and refining documentation structure and wording
 - Cross-checking NGINX proxy patterns and Docker Compose service wiring
+- Validating the Redis Object Cache integration with WordPress
 
 ## Project Description
 
 ### Architecture and design choices
 
-- One Dockerfile per service (NGINX, WordPress, MariaDB, and bonus front-page)
-- NGINX is the only external entrypoint on port 443
+- One Dockerfile per service (NGINX, WordPress, MariaDB, and bonus services: front-page, Redis, Adminer)
+- NGINX is the only external entrypoint on port 443 for the WordPress stack
+- Adminer (bonus) opens an extra host port (8080) as allowed by the bonus rules
 - Inter-service communication happens only inside a dedicated bridge network
 - Data persistence uses Docker named volumes configured to store host data under `/home/ihadj/data`
 - Service startup ordering uses healthchecks and `depends_on` conditions

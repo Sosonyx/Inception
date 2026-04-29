@@ -19,6 +19,26 @@ services:
       retries: 10
       start_period: 30s
 
+  redis:
+    build:
+      context: ./requirements/redis
+      dockerfile: Dockerfile
+    image: redis:inception
+    env_file:
+      - .env
+    networks:
+      - inception_network
+    container_name: redis
+    restart: always
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - redis-cli -a "$${REDIS_PASSWORD}" ping | grep -q PONG
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   wordpress:
     build:
       context: ./requirements/wordpress
@@ -32,6 +52,8 @@ services:
       - inception_network
     depends_on:
       mariadb:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     container_name: wordpress
     restart: always
@@ -56,8 +78,6 @@ services:
     networks:
       - inception_network
     depends_on:
-      mariadb:
-        condition: service_healthy
       wordpress:
         condition: service_healthy
       front-page:
@@ -79,6 +99,27 @@ services:
     networks:
       - inception_network
     container_name: front-page
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  adminer:
+    build:
+      context: ./requirements/adminer
+      dockerfile: Dockerfile
+    image: adminer:inception
+    ports:
+      - "8080:8080"
+    networks:
+      - inception_network
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    container_name: adminer
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]

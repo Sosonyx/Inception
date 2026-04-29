@@ -72,6 +72,9 @@ These are configured to store data under host paths:
 - `/home/ihadj/data/mariadb`
 - `/home/ihadj/data/wordpress`
 
+Redis is used as an in-memory cache only and is intentionally configured without disk
+persistence (`save ""`, `appendonly no`).
+
 This ensures data survives container recreation and image rebuilds.
 
 ## Project Structure Notes
@@ -81,12 +84,34 @@ Core services:
 - `srcs/requirements/mariadb`
 - `srcs/requirements/wordpress`
 - `srcs/requirements/nginx`
-- `srcs/requirements/front-page` (bonus static site)
+
+Bonus services:
+
+- `srcs/requirements/front-page` (static site reverse-proxied through NGINX)
+- `srcs/requirements/redis` (WordPress object cache)
+- `srcs/requirements/adminer` (database admin UI)
 
 NGINX routes:
 
 - `/` -> WordPress/PHP-FPM
 - `/front-page/` -> front-page service via reverse proxy
+
+Adminer is exposed directly on host port `8080` (extra port allowed by the bonus rules).
+
+## Redis Object Cache Integration
+
+- The WordPress image installs `php-redis`.
+- `init-wp.sh` writes `WP_REDIS_HOST`, `WP_REDIS_PORT`, `WP_REDIS_PASSWORD` and `WP_CACHE`
+  into `wp-config.php` at first install.
+- The `redis-cache` plugin is installed and activated, and the drop-in is enabled with
+  `wp redis enable`.
+
+To inspect the cache:
+
+```bash
+docker exec -it wordpress wp redis status --path=/var/www/html --allow-root
+docker exec -it redis redis-cli -a "$REDIS_PASSWORD" info stats
+```
 
 ## Troubleshooting
 
@@ -101,3 +126,14 @@ If WordPress cannot connect to MariaDB:
 1. Check MariaDB health: `docker logs mariadb`
 2. Confirm env values in `srcs/.env`
 3. Recreate stack after config changes: `make re`
+
+If Redis cache does not respond:
+
+1. Check Redis logs: `docker logs redis`
+2. Confirm `REDIS_PASSWORD` matches in `srcs/.env` and `wp-config.php`
+3. Re-enable the drop-in: `docker exec wordpress wp redis enable --path=/var/www/html --allow-root`
+
+If Adminer is unreachable:
+
+1. Confirm port 8080 is free on the host
+2. Check container health: `docker ps --filter name=adminer`

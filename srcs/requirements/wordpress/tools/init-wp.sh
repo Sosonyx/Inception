@@ -34,6 +34,13 @@ wp config create \
     --dbhost="${MYSQL_HOST}" \
     --allow-root
 
+# Configuration du cache Redis
+echo "Configuration de Redis..."
+wp config set WP_REDIS_HOST "${REDIS_HOST}" --path="$WP_DIR" --allow-root
+wp config set WP_REDIS_PORT "${REDIS_PORT}" --raw --path="$WP_DIR" --allow-root
+wp config set WP_REDIS_PASSWORD "${REDIS_PASSWORD}" --path="$WP_DIR" --allow-root
+wp config set WP_CACHE true --raw --path="$WP_DIR" --allow-root
+
 # Installation de WordPress
 echo "Installation de WordPress..."
 wp core install \
@@ -53,6 +60,11 @@ wp user create \
     --user_pass="${WP_USER_PASSWORD}" \
     --role=editor \
     --allow-root
+
+# Activation du plugin Redis Object Cache
+echo "Installation du plugin Redis Object Cache..."
+wp plugin install redis-cache --activate --path="$WP_DIR" --allow-root
+wp redis enable --path="$WP_DIR" --allow-root || true
 
 chown -R www-data:www-data "$WP_DIR"
 
