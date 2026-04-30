@@ -21,15 +21,9 @@ clean: down
 	@$(COMPOSE) down -v
 
 fclean: clean
-<<<<<<< HEAD
-	@docker volume rm srcs_mariadb_data 2>/dev/null || true
-	@docker volume rm srcs_wordpress_html 2>/dev/null || true
-	@docker system prune -f
-=======
 	@$(DOCKER) volume rm srcs_mariadb_data 2>/dev/null || true
 	@$(DOCKER) volume rm srcs_wordpress_html 2>/dev/null || true
 	@$(DOCKER) image prune -a -f
->>>>>>> c02a7cb (tmp)
 
 re: fclean all
 
