@@ -133,13 +133,13 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      o: bind
+      o: bind,Z
       device: /home/ihadj/data/mariadb
   wordpress_html:
     driver: local
     driver_opts:
       type: none
-      o: bind
+      o: bind,Z
       device: /home/ihadj/data/wordpress
 
 networks:

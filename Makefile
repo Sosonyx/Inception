@@ -1,4 +1,6 @@
+DOCKER := /usr/bin/docker
 COMPOSE_FILE = srcs/docker-compose.yml
+COMPOSE = $(DOCKER) compose -f $(COMPOSE_FILE)
 
 all: setup build up
 
@@ -7,28 +9,34 @@ setup:
 	@mkdir -p /home/ihadj/data/wordpress
 
 build:
-	@docker compose -f $(COMPOSE_FILE) build
+	@$(COMPOSE) build
 
 up:
-	@docker compose -f $(COMPOSE_FILE) up -d
+	@$(COMPOSE) up -d
 
 down:
-	@docker compose -f $(COMPOSE_FILE) down
+	@$(COMPOSE) down
 
 clean: down
-	@docker compose -f $(COMPOSE_FILE) down -v
+	@$(COMPOSE) down -v
 
 fclean: clean
+<<<<<<< HEAD
 	@docker volume rm srcs_mariadb_data 2>/dev/null || true
 	@docker volume rm srcs_wordpress_html 2>/dev/null || true
 	@docker system prune -f
+=======
+	@$(DOCKER) volume rm srcs_mariadb_data 2>/dev/null || true
+	@$(DOCKER) volume rm srcs_wordpress_html 2>/dev/null || true
+	@$(DOCKER) image prune -a -f
+>>>>>>> c02a7cb (tmp)
 
 re: fclean all
 
 logs:
-	@docker compose -f $(COMPOSE_FILE) logs -f
+	@$(COMPOSE) logs -f
 
 status:
-	@docker compose -f $(COMPOSE_FILE) ps
+	@$(COMPOSE) ps
 
 .PHONY: all build up down clean fclean re logs status
