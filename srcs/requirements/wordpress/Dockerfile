@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
 	php-mbstring \
 	php-cli \
 	php-redis \
+	iproute2 \
 	curl \
 	unzip \
 	mariadb-client \
